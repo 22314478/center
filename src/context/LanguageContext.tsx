@@ -3,8 +3,9 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { en } from "@/lib/i18n/en";
 import { tr } from "@/lib/i18n/tr";
+import { ru } from "@/lib/i18n/ru";
 
-type Language = "en" | "tr";
+type Language = "en" | "tr" | "ru";
 type Translations = typeof en;
 
 interface LanguageContextType {
@@ -16,9 +17,9 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>("tr");
 
-  const t = language === "en" ? en : tr;
+  const t = language === "en" ? en : language === "ru" ? ru : tr;
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
