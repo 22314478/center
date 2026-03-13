@@ -121,8 +121,8 @@ export default function ServicesPage() {
           >
           {services.map((service) => {
             const Icon = ICON_MAP[service.id] || Scissors;
-            const name = language === 'tr' ? service.nameTr : language === 'ru' ? service.nameRu : language === 'ar' ? service.nameAr : service.name;
-            const desc = language === 'tr' ? service.descTr : language === 'ru' ? service.descRu : language === 'ar' ? service.descAr : service.desc;
+            const name = (language === 'tr' ? service.nameTr : language === 'ru' ? service.nameRu : language === 'ar' ? service.nameAr : service.name) || service.name;
+            const desc = (language === 'tr' ? service.descTr : language === 'ru' ? service.descRu : language === 'ar' ? service.descAr : service.desc) || service.desc;
 
             return (
               <motion.div
