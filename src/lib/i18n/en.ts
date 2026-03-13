@@ -1,3 +1,4 @@
+// Triggering fresh build - Localization refinement
 export const en = {
   nav: {
     home: "Home",
