@@ -17,9 +17,9 @@ export interface IyzicoRequest {
 }
 
 export async function initializeCheckoutForm(request: IyzicoRequest) {
-  const apiKey = process.env.IYZICO_API_KEY;
-  const secretKey = process.env.IYZICO_SECRET_KEY;
-  const baseUrl = process.env.IYZICO_BASE_URL || 'https://sandbox-api.iyzipay.com';
+  const apiKey = (process.env.IYZICO_API_KEY || "").trim();
+  const secretKey = (process.env.IYZICO_SECRET_KEY || "").trim();
+  const baseUrl = (process.env.IYZICO_BASE_URL || "").trim() || 'https://sandbox-api.iyzipay.com';
 
   if (!apiKey || !secretKey) {
     throw new Error('Iyzico API keys are missing in environment variables');
@@ -31,7 +31,7 @@ export async function initializeCheckoutForm(request: IyzicoRequest) {
     request.buyer.gsmNumber = `+90${cleanPhone.startsWith('90') ? cleanPhone.substring(2) : (cleanPhone.startsWith('0') ? cleanPhone.substring(1) : cleanPhone)}`;
   }
 
-  // Ensure prices are formatted as strings with one decimal place if whole, to avoid stringify variations
+  // Ensure prices are formatted as strings with one decimal place if whole
   const formatPrice = (p: any) => parseFloat(p).toFixed(1);
   request.price = formatPrice(request.price);
   request.paidPrice = formatPrice(request.paidPrice);
@@ -72,9 +72,9 @@ export async function initializeCheckoutForm(request: IyzicoRequest) {
 }
 
 export async function retrieveCheckoutForm(token: string) {
-  const apiKey = process.env.IYZICO_API_KEY;
-  const secretKey = process.env.IYZICO_SECRET_KEY;
-  const baseUrl = process.env.IYZICO_BASE_URL || 'https://sandbox-api.iyzipay.com';
+  const apiKey = (process.env.IYZICO_API_KEY || "").trim();
+  const secretKey = (process.env.IYZICO_SECRET_KEY || "").trim();
+  const baseUrl = (process.env.IYZICO_BASE_URL || "").trim() || 'https://sandbox-api.iyzipay.com';
 
   if (!apiKey || !secretKey) {
     throw new Error('Iyzico API keys are missing in environment variables');
