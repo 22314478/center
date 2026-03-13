@@ -137,9 +137,10 @@ export default function Navbar() {
                 const currentIndex = langs.indexOf(language as any);
                 setLanguage(langs[(currentIndex + 1) % langs.length]);
               }}
-              className={`p-2 ${isScrolled ? "text-primary" : "text-white"}`}
+              className={`p-2 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest ${isScrolled ? "text-primary" : "text-white"}`}
             >
               <Globe size={20} />
+              <span>{language.toUpperCase()}</span>
             </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
