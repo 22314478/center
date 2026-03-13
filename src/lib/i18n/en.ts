@@ -39,6 +39,8 @@ export const en = {
     message: "Message (Optional)",
     submit: "Confirm Booking",
     selectService: "Select a service",
+    staffSelect: "Expert Selection",
+    anyStaff: "Any Expert",
     placeholderStatus: "Payment failed. Please try again.",
     placeholders: {
       name: "Your full name",

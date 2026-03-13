@@ -39,6 +39,8 @@ export const tr = {
     message: "Mesaj (İsteğe bağlı)",
     submit: "Randevuyu Onayla",
     selectService: "Bir hizmet seçin",
+    staffSelect: "Uzman Seçimi",
+    anyStaff: "Fark Etmez (Herhangi Biri)",
     placeholderStatus: "Ödeme başarısız. Lütfen tekrar deneyin.",
     placeholders: {
       name: "Adınız ve soyadınız",

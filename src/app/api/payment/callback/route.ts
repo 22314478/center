@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     }
 
     // Retrieve the payment result from iyzico
-    return new Promise((resolve) => {
+    return new Promise<Response>((resolve) => {
       getIyzipay().checkoutForm.retrieve({
         locale: 'TR',
         token: token,
@@ -29,10 +29,14 @@ export async function POST(req: Request) {
         if (err || result.status !== 'success' || result.paymentStatus !== 'SUCCESS') {
           console.error("Iyzico Callback error or failed payment:", err || result.errorMessage);
           
-          await updateDoc(doc(db!, 'appointments', appointmentId), {
-            status: 'cancelled',
-            paymentStatus: 'failed',
-          });
+          try {
+            await updateDoc(doc(db!, 'appointments', appointmentId), {
+              status: 'cancelled',
+              paymentStatus: 'failed',
+            });
+          } catch (dbErr) {
+            console.error("Firebase update error on failed callback:", dbErr);
+          }
 
           // Redirect to booking page with failure
           return resolve(NextResponse.redirect(`${process.env.NEXT_PUBLIC_SITE_URL}/book?status=failed`, 302));
@@ -48,7 +52,7 @@ export async function POST(req: Request) {
         try {
           await updateDoc(doc(db!, 'appointments', appointmentId), updateData);
         } catch (dbErr) {
-          console.error("Firebase update error on callback:", dbErr);
+          console.error("Firebase update error on callback success:", dbErr);
         }
 
         // Redirect to booking page with success

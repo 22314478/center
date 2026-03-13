@@ -14,6 +14,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const { t, language, setLanguage } = useLanguage();
   const { branding } = useConfig();
+  const [isLangOpen, setIsLangOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,6 +49,7 @@ export default function Navbar() {
           <Link href="/" className="group flex items-center gap-2">
             <div className={`flex flex-col ${isScrolled ? "text-primary" : "text-white"}`}>
               {branding?.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img src={branding.logoUrl} alt={branding.siteName} style={{ filter: !isScrolled ? 'brightness(0) invert(1)' : 'none' }} className="h-8 md:h-10 w-auto" />
               ) : (
                 <span className="text-2xl font-black italic tracking-tighter uppercase font-serif">
@@ -75,16 +77,48 @@ export default function Navbar() {
               ))}
             </div>
 
-            <div className="flex items-center space-x-4 pl-6 border-l border-primary/10">
-              <button
-                onClick={() => setLanguage(language === "tr" ? "en" : "tr")}
-                className={`flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest hover:text-secondary transition-colors ${
-                  isScrolled ? "text-primary" : "text-white"
-                }`}
+            <div className="flex items-center space-x-4 pl-6 border-l border-primary/10 relative">
+              <div 
+                className="relative group"
+                onMouseEnter={() => setIsLangOpen(true)}
+                onMouseLeave={() => setIsLangOpen(false)}
               >
-                <Globe size={14} />
-                <span>{language === "tr" ? "EN" : "TR"}</span>
-              </button>
+                <button
+                  className={`flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest hover:text-secondary transition-colors ${
+                    isScrolled ? "text-primary" : "text-white"
+                  }`}
+                >
+                  <Globe size={14} />
+                  <span className="min-w-[20px]">{language.toUpperCase()}</span>
+                </button>
+
+                <AnimatePresence>
+                  {isLangOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 mt-2 py-2 w-24 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden"
+                    >
+                      {(["tr", "en"] as const).map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => {
+                            setLanguage(lang);
+                            setIsLangOpen(false);
+                          }}
+                          className={`w-full px-4 py-2 text-left text-[10px] font-black uppercase tracking-widest transition-colors hover:bg-gray-50 ${
+                            language === lang ? "text-secondary" : "text-primary"
+                          }`}
+                        >
+                          {lang.toUpperCase()}
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               
               <Link
                 href="/book"

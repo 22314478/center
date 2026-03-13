@@ -11,7 +11,8 @@ import {
   Droplets, 
   Smile, 
   Wind, 
-  Layers 
+  Layers,
+  Clock
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -22,9 +23,12 @@ interface Service {
   id: string;
   name: string;
   nameTr: string;
+  nameRu: string;
   desc: string;
   descTr: string;
+  descRu: string;
   price: number;
+  duration: number;
   img: string;
   focalPoint?: { x: number, y: number };
   order: number;
@@ -134,6 +138,12 @@ export default function ServicesPage() {
                   <span className="absolute top-3 right-3 text-sm font-semibold text-secondary bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow font-sans">
                     ₺{service.price}
                   </span>
+                  {/* Duration badge over image */}
+                  {service.duration && (
+                    <span className="absolute top-3 left-3 text-[10px] font-bold text-primary bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow font-sans flex items-center gap-1 uppercase tracking-tighter">
+                      <Clock className="w-3 h-3" /> {service.duration} DK
+                    </span>
+                  )}
                 </div>
 
                 {/* Decorative background element on hover */}
@@ -144,19 +154,31 @@ export default function ServicesPage() {
                     <Icon className="w-6 h-6 text-primary group-hover:text-secondary transition-colors" strokeWidth={1.5} />
                   </div>
 
-                  <h3 className="text-lg font-medium text-primary mb-2">
+                  <h3 className="text-lg font-medium text-primary mb-1">
                     {name}
                   </h3>
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-secondary uppercase tracking-tighter mb-3">
+                    <Clock className="w-3 h-3" />
+                    {service.duration || 30} Dakika
+                  </div>
                   <p className="text-foreground/70 text-sm mb-6 flex-grow">
                     {desc}
                   </p>
                   
-                  <Link
-                    href={`/book?service=${service.id}`}
-                    className="mt-auto w-full py-3 bg-primary text-accent hover:bg-secondary hover:text-primary uppercase tracking-widest text-xs font-semibold transition-colors duration-300"
-                  >
-                    {t.services.bookNow}
-                  </Link>
+                  <div className="mt-auto w-full grid grid-cols-2 gap-2">
+                    <Link
+                      href={`/services/${service.id}`}
+                      className="py-3 bg-secondary text-primary hover:bg-white hover:border-secondary border border-transparent uppercase tracking-widest text-[10px] font-bold transition-all duration-300"
+                    >
+                      {language === 'tr' ? 'İncele' : 'Details'}
+                    </Link>
+                    <Link
+                      href={`/book?service=${service.id}`}
+                      className="py-3 bg-primary text-secondary hover:bg-secondary hover:text-primary uppercase tracking-widest text-[10px] font-bold transition-all duration-300"
+                    >
+                      {t.services.bookNow}
+                    </Link>
+                  </div>
                 </div>
               </motion.div>
             );

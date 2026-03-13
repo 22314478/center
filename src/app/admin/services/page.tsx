@@ -10,9 +10,15 @@ interface Service {
   id: string;
   name: string;
   nameTr: string;
+  nameRu: string;
   desc: string;
   descTr: string;
+  descRu: string;
+  longDesc?: string;
+  longDescTr?: string;
+  longDescRu?: string;
   price: number;
+  duration: number; // in minutes
   img: string;
   order: number;
   focalPoint?: { x: number; y: number };
@@ -173,6 +179,15 @@ export default function ServicesCMS() {
                         />
                       </div>
                       <div>
+                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Russian Name</label>
+                        <input 
+                          type="text" 
+                          value={editFormData.nameRu || ""}
+                          onChange={(e) => setEditFormData({ ...editFormData, nameRu: e.target.value })}
+                          className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all"
+                        />
+                      </div>
+                      <div>
                         <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Price (₺)</label>
                         <input 
                           type="number" 
@@ -181,7 +196,17 @@ export default function ServicesCMS() {
                           className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all font-mono"
                         />
                       </div>
+                      <div>
+                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Duration (min)</label>
+                        <input 
+                          type="number" 
+                          value={editFormData.duration || 0}
+                          onChange={(e) => setEditFormData({ ...editFormData, duration: Number(e.target.value) })}
+                          className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all font-mono"
+                        />
+                      </div>
                     </div>
+                    <div className="grid grid-cols-1 gap-4">
                     <div>
                       <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Description (TR)</label>
                       <textarea 
@@ -191,6 +216,44 @@ export default function ServicesCMS() {
                         className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:ring-2 focus:ring-primary/20 transition-all resize-none"
                       />
                     </div>
+                    <div>
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Description (RU)</label>
+                      <textarea 
+                        rows={2}
+                        value={editFormData.descRu || ""}
+                        onChange={(e) => setEditFormData({ ...editFormData, descRu: e.target.value })}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:ring-2 focus:ring-primary/20 transition-all resize-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Long Description (TR)</label>
+                      <textarea 
+                        rows={4}
+                        value={editFormData.longDescTr || ""}
+                        onChange={(e) => setEditFormData({ ...editFormData, longDescTr: e.target.value })}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:ring-2 focus:ring-primary/20 transition-all resize-none"
+                        placeholder="Detailed description for the service detail page..."
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Long Description (EN)</label>
+                      <textarea 
+                        rows={4}
+                        value={editFormData.longDesc || ""}
+                        onChange={(e) => setEditFormData({ ...editFormData, longDesc: e.target.value })}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:ring-2 focus:ring-primary/20 transition-all resize-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Long Description (RU)</label>
+                      <textarea 
+                        rows={4}
+                        value={editFormData.longDescRu || ""}
+                        onChange={(e) => setEditFormData({ ...editFormData, longDescRu: e.target.value })}
+                        className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:ring-2 focus:ring-primary/20 transition-all resize-none"
+                      />
+                    </div>
+                    </div>
                   </div>
                 ) : (
                   <>
@@ -198,8 +261,12 @@ export default function ServicesCMS() {
                       <div>
                         <h3 className="text-lg font-bold text-gray-900 leading-tight">{service.nameTr}</h3>
                         <p className="text-[10px] text-gray-400 font-bold uppercase">{service.name}</p>
+                        {service.nameRu && <p className="text-[10px] text-secondary font-bold uppercase">{service.nameRu}</p>}
                       </div>
-                      <div className="text-xl font-black text-primary">₺{service.price}</div>
+                      <div className="text-right">
+                        <div className="text-xl font-black text-primary">₺{service.price}</div>
+                        {service.duration && <p className="text-[10px] text-gray-400 font-semibold">{service.duration} min</p>}
+                      </div>
                     </div>
                     <p className="text-xs text-gray-500 font-medium leading-relaxed italic line-clamp-2">
                       {service.descTr}

@@ -100,7 +100,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Payment system is not configured' }, { status: 500 });
     }
 
-    return new Promise((resolve) => {
+    return new Promise<Response>((resolve) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       iyzipayInstance.checkoutFormInitialize.create(request as any, (err: any, result: any) => {
         if (err || result.status !== 'success') {

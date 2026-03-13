@@ -11,12 +11,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack: (config) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-    };
-    return config;
-  },
+  turbopack: {},
   serverExternalPackages: ['iyzipay'],
 };
 
