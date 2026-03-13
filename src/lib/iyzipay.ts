@@ -25,6 +25,21 @@ export async function initializeCheckoutForm(request: IyzicoRequest) {
     throw new Error('Iyzico API keys are missing in environment variables');
   }
 
+  // Ensure phone starts with +90 for Turkish numbers
+  if (request.buyer.gsmNumber && !request.buyer.gsmNumber.startsWith('+')) {
+    const cleanPhone = request.buyer.gsmNumber.replace(/\D/g, '');
+    request.buyer.gsmNumber = `+90${cleanPhone.startsWith('90') ? cleanPhone.substring(2) : (cleanPhone.startsWith('0') ? cleanPhone.substring(1) : cleanPhone)}`;
+  }
+
+  // Ensure prices are formatted as strings with one decimal place if whole, to avoid stringify variations
+  const formatPrice = (p: any) => parseFloat(p).toFixed(1);
+  request.price = formatPrice(request.price);
+  request.paidPrice = formatPrice(request.paidPrice);
+  request.basketItems = request.basketItems.map(item => ({
+    ...item,
+    price: formatPrice(item.price)
+  }));
+
   const rnd = Math.random().toString(36).substring(2, 12);
   const payload = JSON.stringify(request);
   
@@ -50,7 +65,6 @@ export async function initializeCheckoutForm(request: IyzicoRequest) {
   const data = await response.json();
 
   if (data.status !== 'success') {
-    console.error('Iyzico API Error:', data.errorMessage);
     throw new Error(data.errorMessage || 'Iyzico initialization failed');
   }
 
@@ -92,6 +106,5 @@ export async function retrieveCheckoutForm(token: string) {
     body: payload,
   });
 
-  const data = await response.json();
-  return data;
+  return await response.json();
 }
