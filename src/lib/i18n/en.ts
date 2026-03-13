@@ -8,10 +8,28 @@ export const en = {
     book: "Book Appointment",
   },
   hero: {
+    welcome: "Welcome to Next Level Beauty",
+    centerTitle: "Unisex Beauty Center",
     title: "GlowLuxe Unisex Beauty Center",
     subtitle: "Premium Hair & Beauty Experience",
     bookBtn: "Book Appointment",
     servicesBtn: "View Services",
+  },
+  stats: {
+    happyClients: "Happy Clients",
+    yearsExcellence: "Years of Excellence",
+    expertSpecialists: "Expert Specialists",
+    averageRating: "Average Rating"
+  },
+  whyUs: {
+    title: "The GlowLuxe Difference",
+    subtitle: "Why Choose Us",
+    features: {
+      products: { title: "Premium Products", desc: "We use only top-tier, skin-safe products from trusted international brands." },
+      stylists: { title: "Expert Stylists", desc: "Our certified team brings years of professional experience." },
+      booking: { title: "Flexible Booking", desc: "Book online 24/7 and choose a time that works for you." },
+      hygiene: { title: "Hygiene Guaranteed", desc: "Every tool and surface is sterilised before each appointment." }
+    }
   },
   services: {
     title: "Our Premium Services",
@@ -58,6 +76,13 @@ export const en = {
     processing: "Processing...",
     error: "Failed to book appointment. Please try again.",
   },
+  bookingCTA: {
+    title: "Your Glow Awaits. Book Today.",
+    subtitle: "Ready for a Change?",
+    desc: "Reserve your spot in minutes. Pay a small deposit online and enjoy a seamless, luxurious experience.",
+    bookBtn: "Book an Appointment",
+    exploreBtn: "Explore Services"
+  },
   footer: {
     address: "Gazeteci Hasan Tahsin Cd, Ortaköy",
     phone: "+90 533 870 73 28",
@@ -103,7 +128,14 @@ export const en = {
       save: "Save",
       confirm: "Confirm",
       actions: "Actions",
-      status: "Status"
+      status: "Status",
+      details: "Details",
+      mins: "mins",
+      experience: "Service Experience",
+      ready: "Ready to Shine?",
+      readyDesc: "Book your session with our experts today and experience the GlowLuxe touch.",
+      expertCare: "Expert Care",
+      professionalists: "Professional Specialists"
     },
     appointments: {
       title: "Appointments",

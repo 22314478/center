@@ -4,40 +4,43 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Award, Clock, ShieldCheck } from "lucide-react";
 
-const features = [
-  {
-    icon: Sparkles,
-    title: "Premium Products",
-    desc: "We use only top-tier, skin-safe products from trusted international brands to ensure your safety and satisfaction.",
-  },
-  {
-    icon: Award,
-    title: "Expert Stylists",
-    desc: "Our certified team brings years of professional experience across hair, skin, and nail care.",
-  },
-  {
-    icon: Clock,
-    title: "Flexible Booking",
-    desc: "Book online 24/7 and choose a time that works for you. We value your schedule as much as you do.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Hygiene Guaranteed",
-    desc: "Every tool and surface is sterilised before each appointment. Your wellbeing is our top priority.",
-  },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function WhyUs() {
+  const { t } = useLanguage();
+
+  const features = [
+    {
+      icon: Sparkles,
+      title: t.whyUs.features.products.title,
+      desc: t.whyUs.features.products.desc,
+    },
+    {
+      icon: Award,
+      title: t.whyUs.features.stylists.title,
+      desc: t.whyUs.features.stylists.desc,
+    },
+    {
+      icon: Clock,
+      title: t.whyUs.features.booking.title,
+      desc: t.whyUs.features.booking.desc,
+    },
+    {
+      icon: ShieldCheck,
+      title: t.whyUs.features.hygiene.title,
+      desc: t.whyUs.features.hygiene.desc,
+    },
+  ];
   return (
     <section className="py-28 bg-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <span className="text-secondary tracking-[0.25em] font-medium uppercase text-sm block mb-3">
-            Why Choose Us
+            {t.whyUs.subtitle}
           </span>
           <h2 className="text-3xl md:text-5xl font-light text-white mb-4">
-            The GlowLuxe Difference
+            {t.whyUs.title}
           </h2>
           <div className="w-20 h-px bg-secondary mx-auto" />
         </div>

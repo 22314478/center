@@ -8,10 +8,28 @@ export const tr = {
     book: "Randevu Al",
   },
   hero: {
+    welcome: "Güzellikte Bir Üst Seviyeye Hoş Geldiniz",
+    centerTitle: "Uniseks Güzellik Merkezi",
     title: "GlowLuxe Unisex Güzellik Merkezi",
     subtitle: "Premium Saç ve Güzellik Deneyimi",
     bookBtn: "Randevu Al",
     servicesBtn: "Hizmetleri İncele",
+  },
+  stats: {
+    happyClients: "Mutlu Müşteri",
+    yearsExcellence: "Yıllık Deneyim",
+    expertSpecialists: "Uzman Kadro",
+    averageRating: "Ortalama Puan"
+  },
+  whyUs: {
+    title: "GlowLuxe Farkı",
+    subtitle: "Neden Biz?",
+    features: {
+      products: { title: "Premium Ürünler", desc: "Güvenliğiniz için sadece uluslararası markaların en üst segment ürünlerini kullanıyoruz." },
+      stylists: { title: "Uzman Stilistler", desc: "Sertifikalı ekibimiz saç, cilt ve tırnak bakımında yılların deneyimine sahiptir." },
+      booking: { title: "Esnek Randevu", desc: "7/24 online randevu alın. Zamanınıza en az sizin kadar değer veriyoruz." },
+      hygiene: { title: "Hijyen Garantisi", desc: "Her alet ve yüzey her randevudan önce sterilize edilir. Sağlığınız önceliğimizdir." }
+    }
   },
   services: {
     title: "Premium Hizmetlerimiz",
@@ -58,6 +76,13 @@ export const tr = {
     processing: "İşleniyor...",
     error: "Randevu oluşturulamadı. Lütfen tekrar deneyin.",
   },
+  bookingCTA: {
+    title: "Işıltınız Sizi Bekliyor. Bugün Randevu Alın.",
+    subtitle: "Değişime Hazır Mısın?",
+    desc: "Dakikalar içinde yerinizi ayırtın. Küçük bir ön ödeme ile lüks bir deneyimin tadını çıkarın.",
+    bookBtn: "Randevu Al",
+    exploreBtn: "Hizmetleri Keşfet"
+  },
   footer: {
     address: "Gazeteci Hasan Tahsin Cd, Ortaköy",
     phone: "+90 533 870 73 28",
@@ -103,7 +128,14 @@ export const tr = {
       save: "Kaydet",
       confirm: "Onayla",
       actions: "İşlemler",
-      status: "Durum"
+      status: "Durum",
+      details: "Detaylar",
+      mins: "dk",
+      experience: "Hizmet Deneyimi",
+      ready: "Parlamaya Hazır Mısın?",
+      readyDesc: "Bugün uzmanlarımızdan randevu alın ve GlowLuxe dokunuşunu deneyimleyin.",
+      expertCare: "Uzman Bakımı",
+      professionalists: "Profesyonel Uzmanlar"
     },
     appointments: {
       title: "Randevular",

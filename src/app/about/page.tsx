@@ -18,7 +18,7 @@ export default function AboutPage() {
     );
   }
 
-  const aboutText = language === 'tr' ? config?.aboutTr : config?.aboutEn;
+  const aboutText = language === 'tr' ? config?.aboutTr : language === 'ru' ? config?.aboutRu : language === 'ar' ? config?.aboutAr : config?.aboutEn;
 
   return (
     <div className="min-h-screen bg-white">

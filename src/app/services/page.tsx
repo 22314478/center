@@ -149,7 +149,7 @@ export default function ServicesPage() {
                   {/* Duration badge over image */}
                   {service.duration && (
                     <span className="absolute top-3 left-3 text-[10px] font-bold text-primary bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow font-sans flex items-center gap-1 uppercase tracking-tighter">
-                      <Clock className="w-3 h-3" /> {service.duration} DK
+                      <Clock className="w-3 h-3" /> {service.duration} {t.admin.common.mins}
                     </span>
                   )}
                 </div>
@@ -167,7 +167,7 @@ export default function ServicesPage() {
                   </h3>
                   <div className="flex items-center gap-1 text-[10px] font-bold text-secondary uppercase tracking-tighter mb-3">
                     <Clock className="w-3 h-3" />
-                    {service.duration || 30} Dakika
+                    {service.duration || 30} {t.admin.common.mins}
                   </div>
                   <p className="text-foreground/70 text-sm mb-6 flex-grow">
                     {desc}
@@ -178,7 +178,7 @@ export default function ServicesPage() {
                       href={`/services/${service.id}`}
                       className="py-3 bg-secondary text-primary hover:bg-white hover:border-secondary border border-transparent uppercase tracking-widest text-[10px] font-bold transition-all duration-300"
                     >
-                      {language === 'tr' ? 'İncele' : 'Details'}
+                      {t.admin.common.details}
                     </Link>
                     <Link
                       href={`/book?service=${service.id}`}

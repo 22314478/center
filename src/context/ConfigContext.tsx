@@ -14,6 +14,8 @@ interface SiteConfig {
   whatsapp: string;
   aboutEn: string;
   aboutTr: string;
+  aboutRu: string;
+  aboutAr: string;
 }
 
 interface BrandingConfig {

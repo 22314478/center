@@ -40,11 +40,11 @@ export default function Hero() {
             transition={{ delay: 0.3, duration: 0.8 }}
           >
             <span className="text-secondary tracking-[0.3em] text-sm md:text-base font-semibold uppercase mb-4 block">
-              Welcome to Next Level Beauty
+              {t.hero.welcome}
             </span>
             <h1 className="text-5xl md:text-7xl font-light tracking-wide leading-tight text-accent">
                {branding?.siteName || "GlowLuxe"} <br />
-              <span className="font-serif italic text-4xl md:text-6xl text-white">Unisex Beauty Center</span>
+              <span className="font-serif italic text-4xl md:text-6xl text-white">{t.hero.centerTitle}</span>
             </h1>
           </motion.div>
           

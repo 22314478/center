@@ -2,15 +2,17 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-
-const stats = [
-  { value: "2,500+", label: "Happy Clients" },
-  { value: "8+", label: "Years of Excellence" },
-  { value: "15+", label: "Expert Specialists" },
-  { value: "4.9 ★", label: "Average Rating" },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Stats() {
+  const { t } = useLanguage();
+
+  const stats = [
+    { value: "2,500+", label: t.stats.happyClients },
+    { value: "8+", label: t.stats.yearsExcellence },
+    { value: "15+", label: t.stats.expertSpecialists },
+    { value: "4.9 ★", label: t.stats.averageRating },
+  ];
   return (
     <section className="bg-secondary py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
