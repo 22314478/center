@@ -293,8 +293,6 @@ export default function ServicesCMS() {
                       <div>
                         <h3 className="text-lg font-bold text-gray-900 leading-tight">{language === 'tr' ? service.nameTr : language === 'ru' ? service.nameRu : language === 'ar' ? service.nameAr : service.name}</h3>
                         <p className="text-[10px] text-gray-400 font-bold uppercase">{service.name}</p>
-                        {service.nameRu && <p className="text-[10px] text-secondary font-bold uppercase">{service.nameRu}</p>}
-                        {service.nameAr && <p className="text-[10px] text-secondary font-bold uppercase font-arabic">{service.nameAr}</p>}
                       </div>
                       <div className="text-right">
                         <div className="text-xl font-black text-primary">₺{service.price}</div>
