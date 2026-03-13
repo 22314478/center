@@ -8,7 +8,8 @@ function getIyzipay(): Iyzipay {
     const secretKey = process.env.IYZICO_SECRET_KEY;
 
     if (!apiKey || !secretKey) {
-      throw new Error('IYZICO_API_KEY and IYZICO_SECRET_KEY must be set in .env.local');
+      console.error("DEBUG: Iyzico keys missing - API Key:", !!apiKey, "Secret Key:", !!secretKey);
+      throw new Error(`Iyzico configuration missing: ${!apiKey ? 'API_KEY ' : ''}${!secretKey ? 'SECRET_KEY' : ''}`);
     }
 
     _iyzipay = new Iyzipay({
