@@ -5,6 +5,7 @@ import { collection, query, orderBy, onSnapshot, doc, updateDoc } from "firebase
 import { db } from "@/lib/firebase";
 import { Scissors, Edit2, Save, X, Plus, Image as ImageIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Service {
   id: string;
@@ -25,6 +26,7 @@ interface Service {
 }
 
 export default function ServicesCMS() {
+  const { t } = useLanguage();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -91,12 +93,12 @@ export default function ServicesCMS() {
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 leading-tight">Services Management</h1>
-          <p className="text-gray-500 font-medium mt-1 uppercase text-xs tracking-widest">Update catalog, prices and images</p>
+          <h1 className="text-3xl font-bold text-gray-900 leading-tight">{t.admin.servicesPage.title}</h1>
+          <p className="text-gray-500 font-medium mt-1 uppercase text-xs tracking-widest">{t.admin.servicesPage.subtitle}</p>
         </div>
         <button className="flex items-center space-x-2 px-5 py-2.5 bg-primary text-secondary rounded-xl font-bold text-sm shadow-lg hover:shadow-primary/20 transition-all hover:scale-[1.02]">
           <Plus size={18} />
-          <span>Add New Service</span>
+          <span>{t.admin.servicesPage.addBtn}</span>
         </button>
       </div>
 
@@ -140,7 +142,7 @@ export default function ServicesCMS() {
                        <div className="w-1 h-1 bg-primary rounded-full shadow-[0_0_8px_primary]" />
                     </div>
                     <div className="absolute bottom-2 inset-x-0 text-center">
-                      <p className="text-[8px] font-black text-white uppercase tracking-widest pointer-events-none">Click to target focus</p>
+                      <p className="text-[8px] font-black text-white uppercase tracking-widest pointer-events-none">{t.admin.servicesPage.clickToFocus}</p>
                     </div>
                   </>
                 )}
@@ -158,7 +160,7 @@ export default function ServicesCMS() {
                       type="text" 
                       value={editFormData.img || ""}
                       onChange={(e) => setEditFormData({ ...editFormData, img: e.target.value })}
-                      placeholder="Image URL..."
+                      placeholder={t.admin.servicesPage.imagePlaceholder}
                       className="bg-transparent border-none focus:ring-0 text-[10px] w-full placeholder:text-secondary/50 font-bold"
                     />
                   </div>
@@ -170,7 +172,7 @@ export default function ServicesCMS() {
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Turkish Name</label>
+                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.servicesPage.trName}</label>
                         <input 
                           type="text" 
                           value={editFormData.nameTr || ""}
@@ -179,7 +181,7 @@ export default function ServicesCMS() {
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Russian Name</label>
+                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.servicesPage.ruName}</label>
                         <input 
                           type="text" 
                           value={editFormData.nameRu || ""}
@@ -188,7 +190,7 @@ export default function ServicesCMS() {
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Price (₺)</label>
+                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.servicesPage.price}</label>
                         <input 
                           type="number" 
                           value={editFormData.price || 0}
@@ -197,7 +199,7 @@ export default function ServicesCMS() {
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Duration (min)</label>
+                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.servicesPage.duration}</label>
                         <input 
                           type="number" 
                           value={editFormData.duration || 0}
@@ -208,7 +210,7 @@ export default function ServicesCMS() {
                     </div>
                     <div className="grid grid-cols-1 gap-4">
                     <div>
-                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Description (TR)</label>
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.servicesPage.descTr}</label>
                       <textarea 
                         rows={2}
                         value={editFormData.descTr || ""}
@@ -217,7 +219,7 @@ export default function ServicesCMS() {
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Description (RU)</label>
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.servicesPage.descRu}</label>
                       <textarea 
                         rows={2}
                         value={editFormData.descRu || ""}
@@ -226,7 +228,7 @@ export default function ServicesCMS() {
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Long Description (TR)</label>
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.servicesPage.longDescTr}</label>
                       <textarea 
                         rows={4}
                         value={editFormData.longDescTr || ""}
@@ -236,7 +238,7 @@ export default function ServicesCMS() {
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Long Description (EN)</label>
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.servicesPage.longDescEn}</label>
                       <textarea 
                         rows={4}
                         value={editFormData.longDesc || ""}
@@ -245,7 +247,7 @@ export default function ServicesCMS() {
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Long Description (RU)</label>
+                      <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.servicesPage.longDescRu}</label>
                       <textarea 
                         rows={4}
                         value={editFormData.longDescRu || ""}
@@ -265,7 +267,7 @@ export default function ServicesCMS() {
                       </div>
                       <div className="text-right">
                         <div className="text-xl font-black text-primary">₺{service.price}</div>
-                        {service.duration && <p className="text-[10px] text-gray-400 font-semibold">{service.duration} min</p>}
+                        {service.duration && <p className="text-[10px] text-gray-400 font-semibold">{service.duration} {t.admin.servicesPage.min}</p>}
                       </div>
                     </div>
                     <p className="text-xs text-gray-500 font-medium leading-relaxed italic line-clamp-2">
@@ -281,14 +283,14 @@ export default function ServicesCMS() {
                         onClick={handleCancel}
                         className="px-4 py-2 text-xs font-bold uppercase text-gray-400 hover:text-gray-600 transition-colors"
                       >
-                        Cancel
+                        {t.admin.common.cancel}
                       </button>
                       <button 
                         onClick={() => handleSave(service.id)}
                         className="flex items-center space-x-2 px-4 py-2 bg-emerald-500 text-white rounded-xl text-xs font-bold uppercase shadow-lg shadow-emerald-500/20 hover:scale-[1.02] active:scale-95 transition-all"
                       >
                         <Save size={14} />
-                        <span>Save</span>
+                        <span>{t.admin.common.save}</span>
                       </button>
                     </>
                   ) : (
@@ -297,7 +299,7 @@ export default function ServicesCMS() {
                       className="flex items-center space-x-2 px-4 py-2 bg-primary/5 text-primary hover:bg-primary hover:text-secondary rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300"
                     >
                       <Edit2 size={14} />
-                      <span>Edit Info</span>
+                      <span>{t.admin.servicesPage.editInfo}</span>
                     </button>
                   )}
                 </div>

@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useConfig } from "@/context/ConfigContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Appointment {
   id: string;
@@ -32,6 +33,8 @@ interface Appointment {
 }
 
 export default function Dashboard() {
+  const { branding } = useConfig();
+  const { t } = useLanguage();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [stats, setStats] = useState({
     total: 0,
@@ -41,7 +44,6 @@ export default function Dashboard() {
     recent: [] as Appointment[]
   });
   const [loading, setLoading] = useState(true);
-  const { branding } = useConfig();
 
   useEffect(() => {
     if (!db) {
@@ -75,10 +77,10 @@ export default function Dashboard() {
   }, []);
 
   const statCards = [
-    { name: 'Total Bookings', value: stats.total, icon: CalendarCheck, color: 'text-blue-600', bg: 'bg-blue-50', change: '+12%', up: true },
-    { name: 'Pending Approval', value: stats.pending, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', change: 'Action Needed', up: false },
-    { name: 'Confirmed Sales', value: stats.confirmed, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50', change: '+5%', up: true },
-    { name: 'Total Revenue', value: `₺${stats.earnings}`, icon: DollarSign, color: 'text-primary', bg: 'bg-accent/10', change: 'Deposits', up: true },
+    { name: t.admin.dashboard.totalBookings, value: stats.total, icon: CalendarCheck, color: 'text-blue-600', bg: 'bg-blue-50', change: '+12%', up: true },
+    { name: t.admin.dashboard.pendingApproval, value: stats.pending, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50', change: t.admin.dashboard.changeActionNeeded, up: false },
+    { name: t.admin.dashboard.confirmedSales, value: stats.confirmed, icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50', change: '+5%', up: true },
+    { name: t.admin.dashboard.totalRevenue, value: `₺${stats.earnings}`, icon: DollarSign, color: 'text-primary', bg: 'bg-accent/10', change: t.admin.dashboard.changeDeposits, up: true },
   ];
 
   if (loading) {
@@ -93,15 +95,15 @@ export default function Dashboard() {
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 leading-tight">Dashboard Overview</h1>
+          <h1 className="text-3xl font-bold text-gray-900 leading-tight">{t.admin.dashboard.title}</h1>
           <p className="text-gray-500 font-medium mt-1 uppercase text-xs tracking-widest leading-relaxed">
-            Salonunuzun durumu: {branding?.siteName || "GlowLuxe"}
+            {t.admin.dashboard.subtitle} {branding?.siteName || "GlowLuxe"}
           </p>
         </div>
         <div className="hidden sm:flex items-center space-x-2 bg-white border border-gray-200 p-1 rounded-xl shadow-sm">
-           <button className="px-4 py-2 text-xs font-bold uppercase text-gray-400 hover:text-gray-600">Day</button>
-           <button className="px-4 py-2 text-xs font-bold uppercase bg-primary text-secondary rounded-lg shadow-md">Week</button>
-           <button className="px-4 py-2 text-xs font-bold uppercase text-gray-400 hover:text-gray-600">Month</button>
+           <button className="px-4 py-2 text-xs font-bold uppercase text-gray-400 hover:text-gray-600">{t.admin.dashboard.day}</button>
+           <button className="px-4 py-2 text-xs font-bold uppercase bg-primary text-secondary rounded-lg shadow-md">{t.admin.dashboard.week}</button>
+           <button className="px-4 py-2 text-xs font-bold uppercase text-gray-400 hover:text-gray-600">{t.admin.dashboard.month}</button>
         </div>
       </div>
 
@@ -137,11 +139,11 @@ export default function Dashboard() {
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between px-2">
             <h2 className="text-xl font-bold text-gray-900 flex items-center">
-              Recent Bookings
-              <span className="ml-3 px-2 py-0.5 rounded-full bg-primary/5 text-primary text-[10px] uppercase font-black tracking-tighter border border-primary/10">Latest 5</span>
+              {t.admin.dashboard.recentTitle}
+              <span className="ml-3 px-2 py-0.5 rounded-full bg-primary/5 text-primary text-[10px] uppercase font-black tracking-tighter border border-primary/10">{t.admin.dashboard.latest5}</span>
             </h2>
             <Link href="/admin/appointments" className="text-primary text-sm font-bold hover:underline flex items-center">
-              View All <ChevronRight size={16} />
+              {t.admin.dashboard.viewAll} <ChevronRight size={16} />
             </Link>
           </div>
           
@@ -167,9 +169,9 @@ export default function Dashboard() {
                     </div>
                     <div className="w-24 text-center">
                        {appt.status === 'pending' ? (
-                         <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 text-amber-700 uppercase">Pending</span>
+                         <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-100 text-amber-700 uppercase">{t.admin.dashboard.statusPending}</span>
                        ) : (
-                         <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 uppercase">Success</span>
+                         <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-700 uppercase">{t.admin.dashboard.statusSuccess}</span>
                        )}
                     </div>
                   </div>
@@ -181,7 +183,7 @@ export default function Dashboard() {
 
         {/* Quick Actions / Today's Summary */}
         <div className="space-y-4">
-          <h2 className="text-xl font-bold text-gray-900 px-2">Quick Actions</h2>
+          <h2 className="text-xl font-bold text-gray-900 px-2">{t.admin.dashboard.quickActions}</h2>
           <div className="grid grid-cols-1 gap-4">
             <Link 
               href="/admin/services"
@@ -189,8 +191,8 @@ export default function Dashboard() {
             >
               <div className="relative z-10 flex flex-col items-center text-center">
                 <Scissors className="mb-3 text-accent group-hover:rotate-12 transition-transform" size={32} />
-                <h3 className="font-black uppercase tracking-widest text-sm">Manage Services</h3>
-                <p className="text-[10px] opacity-70 mt-1 uppercase font-bold tracking-tighter">Update prices & photos</p>
+                <h3 className="font-black uppercase tracking-widest text-sm">{t.admin.dashboard.manageServices}</h3>
+                <p className="text-[10px] opacity-70 mt-1 uppercase font-bold tracking-tighter">{t.admin.dashboard.updatePricesPhotos}</p>
               </div>
               <div className="absolute top-0 right-0 p-2 opacity-20"><ArrowUpRight size={48} /></div>
             </Link>
@@ -201,8 +203,8 @@ export default function Dashboard() {
             >
               <div className="relative z-10 flex flex-col items-center text-center">
                 <ImageIcon className="mb-3 text-primary group-hover:scale-110 transition-transform" size={32} />
-                <h3 className="font-black uppercase tracking-widest text-sm text-gray-900">Manage Gallery</h3>
-                <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">Upload new salon photos</p>
+                <h3 className="font-black uppercase tracking-widest text-sm text-gray-900">{t.admin.dashboard.manageGallery}</h3>
+                <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-tighter">{t.admin.dashboard.uploadNewPhotos}</p>
               </div>
             </Link>
 
@@ -212,7 +214,7 @@ export default function Dashboard() {
             >
               <div className="relative z-10 flex flex-col items-center text-center text-gray-400 group-hover:text-primary transition-colors">
                 <Settings size={32} className="group-hover:rotate-45 transition-transform duration-500" />
-                <h3 className="font-black uppercase tracking-widest text-sm mt-3">Settings</h3>
+                <h3 className="font-black uppercase tracking-widest text-sm mt-3">{t.admin.dashboard.settings}</h3>
               </div>
             </Link>
           </div>

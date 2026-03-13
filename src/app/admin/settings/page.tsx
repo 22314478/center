@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase";
 import { Settings, Save, Smartphone, Mail, MapPin, Instagram, Globe, Info, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import Modal from "@/components/Modal";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface SiteConfig {
   siteName: string;
@@ -20,6 +21,7 @@ interface SiteConfig {
 }
 
 export default function SettingsCMS() {
+  const { t } = useLanguage();
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -58,16 +60,16 @@ export default function SettingsCMS() {
       await updateDoc(doc(db, "settings", "config"), config as any);
       setModal({
         isOpen: true,
-        title: "Başarılı",
-        message: "Ayarlar başarıyla kaydedildi.",
+        title: t.admin.settingsPage.successTitle,
+        message: t.admin.settingsPage.successMsg,
         type: "success",
       });
     } catch (error) {
       console.error("Error saving settings:", error);
       setModal({
         isOpen: true,
-        title: "Hata",
-        message: "Ayarlar kaydedilirken bir hata oluştu.",
+        title: t.admin.settingsPage.errorTitle,
+        message: t.admin.settingsPage.errorMsg,
         type: "error",
       });
     } finally {
@@ -87,8 +89,8 @@ export default function SettingsCMS() {
     <div className="space-y-8 animate-in fade-in duration-500 max-w-5xl">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 leading-tight">General Settings</h1>
-          <p className="text-gray-500 font-medium mt-1 uppercase text-xs tracking-widest">Global site configuration & contact info</p>
+          <h1 className="text-3xl font-bold text-gray-900 leading-tight">{t.admin.settingsPage.title}</h1>
+          <p className="text-gray-500 font-medium mt-1 uppercase text-xs tracking-widest">{t.admin.settingsPage.subtitle}</p>
         </div>
         <button
           onClick={handleSave}
@@ -96,7 +98,7 @@ export default function SettingsCMS() {
           className="flex items-center space-x-2 px-6 py-3 bg-primary text-secondary rounded-xl font-bold text-sm shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
         >
           {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-          <span>{saving ? "Saving..." : "Save All Changes"}</span>
+          <span>{saving ? t.admin.settingsPage.savingBtn : t.admin.settingsPage.saveBtn}</span>
         </button>
       </div>
 
@@ -105,12 +107,12 @@ export default function SettingsCMS() {
         <section className="space-y-6">
           <div className="flex items-center space-x-2 text-primary">
             <Smartphone size={20} />
-            <h2 className="font-bold uppercase tracking-widest text-sm">Contact & Location</h2>
+            <h2 className="font-bold uppercase tracking-widest text-sm">{t.admin.settingsPage.contactSection}</h2>
           </div>
           
           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
             <div>
-              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Salon Phone</label>
+              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.settingsPage.salonPhone}</label>
               <input 
                 name="phone"
                 type="text" 
@@ -120,7 +122,7 @@ export default function SettingsCMS() {
               />
             </div>
             <div>
-              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Email Address</label>
+              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.settingsPage.emailAddress}</label>
               <input 
                 name="email"
                 type="email" 
@@ -130,7 +132,7 @@ export default function SettingsCMS() {
               />
             </div>
             <div>
-              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Physical Address</label>
+              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.settingsPage.physicalAddress}</label>
               <input 
                 name="address"
                 type="text" 
@@ -140,7 +142,7 @@ export default function SettingsCMS() {
               />
             </div>
             <div>
-              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Google Maps Embed URL</label>
+              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.settingsPage.mapUrl}</label>
               <input 
                 name="mapUrl"
                 type="text" 
@@ -156,12 +158,12 @@ export default function SettingsCMS() {
         <section className="space-y-6">
           <div className="flex items-center space-x-2 text-primary">
             <Instagram size={20} />
-            <h2 className="font-bold uppercase tracking-widest text-sm">Social Media</h2>
+            <h2 className="font-bold uppercase tracking-widest text-sm">{t.admin.settingsPage.socialSection}</h2>
           </div>
           
           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
             <div>
-              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">Instagram URL</label>
+              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.settingsPage.instagramUrl}</label>
               <input 
                 name="instagram"
                 type="text" 
@@ -171,7 +173,7 @@ export default function SettingsCMS() {
               />
             </div>
             <div>
-              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">WhatsApp URL</label>
+              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.settingsPage.whatsappUrl}</label>
               <input 
                 name="whatsapp"
                 type="text" 
@@ -184,11 +186,11 @@ export default function SettingsCMS() {
 
           <div className="flex items-center space-x-2 text-primary mt-8">
             <Info size={20} />
-            <h2 className="font-bold uppercase tracking-widest text-sm">About Text</h2>
+            <h2 className="font-bold uppercase tracking-widest text-sm">{t.admin.settingsPage.aboutSection}</h2>
           </div>
           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
             <div>
-              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">About Us (Turkish)</label>
+              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.settingsPage.aboutTr}</label>
               <textarea 
                 name="aboutTr"
                 rows={4}
@@ -198,7 +200,7 @@ export default function SettingsCMS() {
               />
             </div>
             <div>
-              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">About Us (English)</label>
+              <label className="text-[10px] font-black uppercase text-gray-400 tracking-tighter mb-1 block">{t.admin.settingsPage.aboutEn}</label>
               <textarea 
                 name="aboutEn"
                 rows={4}

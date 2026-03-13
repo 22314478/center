@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { collection, query, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Users as UsersIcon } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface CustomerData {
   name: string;
@@ -14,6 +15,7 @@ interface CustomerData {
 }
 
 export default function CustomersPage() {
+  const { t } = useLanguage();
   const [customers, setCustomers] = useState<CustomerData[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -78,8 +80,8 @@ export default function CustomersPage() {
           <UsersIcon className="w-5 h-5 text-primary" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Customers</h1>
-          <p className="text-gray-500 text-sm">View details of all your Unique clients.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t.admin.customers.title}</h1>
+          <p className="text-gray-500 text-sm">{t.admin.customers.subtitle}</p>
         </div>
       </div>
 
@@ -88,18 +90,18 @@ export default function CustomersPage() {
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-6 py-4 font-semibold">Name</th>
-                <th className="px-6 py-4 font-semibold">Phone</th>
-                <th className="px-6 py-4 font-semibold">Email</th>
-                <th className="px-6 py-4 font-semibold">Total Visits</th>
-                <th className="px-6 py-4 font-semibold text-right">Last Visit</th>
+                <th className="px-6 py-4 font-semibold">{t.admin.customers.name}</th>
+                <th className="px-6 py-4 font-semibold">{t.admin.customers.phone}</th>
+                <th className="px-6 py-4 font-semibold">{t.admin.customers.email}</th>
+                <th className="px-6 py-4 font-semibold">{t.admin.customers.totalVisits}</th>
+                <th className="px-6 py-4 font-semibold text-right">{t.admin.customers.lastVisit}</th>
               </tr>
             </thead>
             <tbody>
               {customers.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-10 text-center text-gray-400">
-                    No customers found yet.
+                    {t.admin.customers.noCustomers}
                   </td>
                 </tr>
               ) : (
@@ -109,7 +111,7 @@ export default function CustomersPage() {
                     <td className="px-6 py-4">{c.phone}</td>
                     <td className="px-6 py-4">{c.email}</td>
                     <td className="px-6 py-4 text-primary font-medium">
-                      {c.visits} {c.visits === 1 ? 'visit' : 'visits'}
+                      {c.visits} {c.visits === 1 ? t.admin.customers.visit : t.admin.customers.visits}
                     </td>
                     <td className="px-6 py-4 text-right text-gray-400">{c.lastVisit}</td>
                   </tr>
