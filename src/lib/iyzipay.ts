@@ -56,3 +56,42 @@ export async function initializeCheckoutForm(request: IyzicoRequest) {
 
   return data;
 }
+
+export async function retrieveCheckoutForm(token: string) {
+  const apiKey = process.env.IYZICO_API_KEY;
+  const secretKey = process.env.IYZICO_SECRET_KEY;
+  const baseUrl = process.env.IYZICO_BASE_URL || 'https://sandbox-api.iyzipay.com';
+
+  if (!apiKey || !secretKey) {
+    throw new Error('Iyzico API keys are missing in environment variables');
+  }
+
+  const rnd = Math.random().toString(36).substring(2, 12);
+  const requestBody = {
+    locale: 'tr',
+    conversationId: rnd,
+    token: token,
+  };
+  const payload = JSON.stringify(requestBody);
+  
+  const hashStr = apiKey + rnd + secretKey + payload;
+  const signature = crypto
+    .createHmac('sha256', secretKey)
+    .update(hashStr)
+    .digest('hex');
+
+  const authorization = Buffer.from(`${apiKey}:${signature}`).toString('base64');
+
+  const response = await fetch(`${baseUrl}/payment/iyzipos/checkoutform/auth/ecom/detail`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-iyzi-rnd': rnd,
+      'Authorization': `IYZWSv2 ${authorization}`,
+    },
+    body: payload,
+  });
+
+  const data = await response.json();
+  return data;
+}
