@@ -1,163 +1,148 @@
 import crypto from 'crypto';
 
-export interface IyzicoRequest {
-  locale: string;
-  conversationId: string;
-  price: string;
-  paidPrice: string;
-  currency: string;
-  basketId: string;
-  paymentGroup: string;
-  enabledInstallments?: number[];
-  callbackUrl: string;
-  buyer: {
-    id: string;
-    name: string;
-    surname: string;
-    gsmNumber: string;
-    email: string;
-    identityNumber: string;
-    registrationAddress: string;
-    ip: string;
-    city: string;
-    country: string;
-    zipCode: string;
-  };
-  shippingAddress: {
-    contactName: string;
-    city: string;
-    country: string;
-    address: string;
-    zipCode: string;
-  };
-  billingAddress: {
-    contactName: string;
-    city: string;
-    country: string;
-    address: string;
-    zipCode: string;
-  };
-  basketItems: {
-    id: string;
-    name: string;
-    category1: string;
-    category2: string;
-    itemType: string;
-    price: string;
-  }[];
+// ─── V2 Auth (matches official iyzipay SDK utils.js exactly) ─────────────────
+function generateRandomString(): string {
+  return process.hrtime()[0] + Math.random().toString(8).slice(2);
 }
 
-export async function initializeCheckoutForm(request: any) {
-  const apiKey = (process.env.IYZICO_API_KEY || "").trim();
-  const secretKey = (process.env.IYZICO_SECRET_KEY || "").trim();
-  const baseUrl = (process.env.IYZICO_BASE_URL || "").trim() || 'https://sandbox-api.iyzipay.com';
-
-  if (!apiKey || !secretKey) {
-    throw new Error('Iyzico API keys are missing in environment variables');
-  }
-
-  // 1. Strict Formatting for Iyzico V2 (User requested string format with 2 decimals)
-  const formatIyzPrice = (p: any) => parseFloat(p.toString()).toFixed(2);
-
-  const cleanRequest = {
-    locale: request.locale || 'tr',
-    conversationId: request.conversationId,
-    price: formatIyzPrice(request.price),
-    paidPrice: formatIyzPrice(request.paidPrice),
-    currency: request.currency || 'TRY',
-    basketId: request.basketId,
-    paymentGroup: 'PRODUCT',
-    enabledInstallments: request.enabledInstallments || [1],
-    callbackUrl: request.callbackUrl.split('?')[0], // Base URL without query params
-    buyer: {
-      id: request.buyer.id,
-      name: request.buyer.name,
-      surname: request.buyer.surname,
-      gsmNumber: request.buyer.gsmNumber.startsWith('+') ? request.buyer.gsmNumber : ('+90' + request.buyer.gsmNumber.replace(/\D/g, '').replace(/^90/, '').replace(/^0/, '')),
-      email: request.buyer.email,
-      // User suggested this specific identity number for sandbox
-      identityNumber: '74300864791', 
-      registrationAddress: request.buyer.registrationAddress,
-      ip: '85.34.78.112', // Valid IP required by Iyzico sandbox
-      city: request.buyer.city,
-      country: request.buyer.country,
-      zipCode: request.buyer.zipCode
-    },
-    shippingAddress: request.shippingAddress,
-    billingAddress: request.billingAddress,
-    basketItems: request.basketItems.map((item: any) => ({
-      id: item.id,
-      name: item.name,
-      category1: item.category1 || 'Beauty',
-      category2: item.category2 || 'Service',
-      itemType: item.itemType || 'VIRTUAL',
-      price: formatIyzPrice(item.price),
-    }))
-  };
-
-  const rnd = crypto.randomBytes(8).toString('hex');
-  const payload = JSON.stringify(cleanRequest);
-  
-  // Iyzico V2 Auth Generation
-  const hashStr = apiKey + rnd + secretKey + payload;
-  
+function generateAuthV2(
+  apiKey: string,
+  secretKey: string,
+  uriPath: string,
+  body: object,
+  randomString: string
+): string {
   const signature = crypto
     .createHmac('sha256', secretKey)
-    .update(hashStr)
+    .update(randomString + uriPath + JSON.stringify(body))
     .digest('hex');
 
-  const authorization = Buffer.from(`${apiKey}:${signature}`).toString('base64');
+  const authorizationParams = [
+    'apiKey:' + apiKey,
+    'randomKey:' + randomString,
+    'signature:' + signature,
+  ];
 
-  const response = await fetch(`${baseUrl}/payment/iyzipos/checkoutform/initialize/auth/ecom`, {
+  return 'IYZWSv2 ' + Buffer.from(authorizationParams.join('&')).toString('base64');
+}
+
+// ─── Price formatter (Iyzico rejects "1250.00" but wants "1250.0" style) ──────
+// Actually Iyzico sandbox accepts both; we use toFixed(2) for consistency.
+function formatPrice(p: number | string): string {
+  return parseFloat(p.toString()).toFixed(2);
+}
+
+// ─── Initialize Checkout Form ─────────────────────────────────────────────────
+export async function initializeCheckoutForm(request: any) {
+  const apiKey    = (process.env.IYZICO_API_KEY    || '').trim();
+  const secretKey = (process.env.IYZICO_SECRET_KEY || '').trim();
+  const baseUrl   = (process.env.IYZICO_BASE_URL   || 'https://sandbox-api.iyzipay.com').trim();
+
+  if (!apiKey || !secretKey) throw new Error('Iyzico API keys missing');
+
+  const uriPath = '/payment/iyzipos/checkoutform/initialize/auth/ecom';
+
+  const body = {
+    locale:               request.locale        || 'tr',
+    conversationId:       request.conversationId,
+    price:                formatPrice(request.price),
+    paidPrice:            formatPrice(request.paidPrice),
+    currency:             request.currency       || 'TRY',
+    basketId:             request.basketId,
+    paymentGroup:         'PRODUCT',
+    enabledInstallments:  request.enabledInstallments || [1],
+    callbackUrl:          request.callbackUrl,
+    buyer: {
+      id:                  request.buyer.id,
+      name:                request.buyer.name,
+      surname:             request.buyer.surname,
+      gsmNumber:           request.buyer.gsmNumber,
+      email:               request.buyer.email,
+      identityNumber:      '74300864791',
+      registrationAddress: request.buyer.registrationAddress || 'Ortakoy, Istanbul',
+      ip:                  '85.34.78.112',
+      city:                request.buyer.city    || 'Istanbul',
+      country:             request.buyer.country || 'Turkey',
+      zipCode:             request.buyer.zipCode  || '34347',
+    },
+    shippingAddress: {
+      contactName: request.shippingAddress?.contactName || request.buyer.name + ' ' + request.buyer.surname,
+      city:        request.shippingAddress?.city        || 'Istanbul',
+      country:     request.shippingAddress?.country     || 'Turkey',
+      address:     request.shippingAddress?.address     || 'Ortakoy, Istanbul',
+      zipCode:     request.shippingAddress?.zipCode     || '34347',
+    },
+    billingAddress: {
+      contactName: request.billingAddress?.contactName || request.buyer.name + ' ' + request.buyer.surname,
+      city:        request.billingAddress?.city        || 'Istanbul',
+      country:     request.billingAddress?.country     || 'Turkey',
+      address:     request.billingAddress?.address     || 'Ortakoy, Istanbul',
+      zipCode:     request.billingAddress?.zipCode     || '34347',
+    },
+    basketItems: request.basketItems.map((item: any) => ({
+      id:        item.id,
+      name:      item.name,
+      category1: item.category1 || 'Beauty',
+      category2: 'Service',
+      itemType:  item.itemType  || 'VIRTUAL',
+      price:     formatPrice(item.price),
+    })),
+  };
+
+  const randomString  = generateRandomString();
+  const authorization = generateAuthV2(apiKey, secretKey, uriPath, body, randomString);
+
+  console.log('DEBUG Iyzico request body:', JSON.stringify(body));
+  console.log('DEBUG Iyzico uriPath:', uriPath);
+
+  const response = await fetch(`${baseUrl}${uriPath}`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'x-iyzi-rnd': rnd,
-      'Authorization': `IYZWSv2 ${authorization}`,
+      'Content-Type':         'application/json',
+      'x-iyzi-rnd':           randomString,
+      'x-iyzi-client-version': 'iyzipay-node-2.0.65',
+      'Authorization':         authorization,
     },
-    body: payload,
+    body: JSON.stringify(body),
   });
 
   const data = await response.json();
 
   if (data.status !== 'success') {
-    console.error("DEBUG: Iyzico Failure Payload:", payload);
-    console.error("DEBUG: Iyzico Failure Response:", JSON.stringify(data));
+    console.error('DEBUG Iyzico failure payload:', JSON.stringify(body));
+    console.error('DEBUG Iyzico failure response:', JSON.stringify(data));
     throw new Error(`${data.errorMessage} (Code: ${data.errorCode})`);
   }
 
   return data;
 }
 
+// ─── Retrieve Checkout Form (callback) ───────────────────────────────────────
 export async function retrieveCheckoutForm(token: string) {
-  const apiKey = (process.env.IYZICO_API_KEY || "").trim();
-  const secretKey = (process.env.IYZICO_SECRET_KEY || "").trim();
-  const baseUrl = (process.env.IYZICO_BASE_URL || "").trim() || 'https://sandbox-api.iyzipay.com';
+  const apiKey    = (process.env.IYZICO_API_KEY    || '').trim();
+  const secretKey = (process.env.IYZICO_SECRET_KEY || '').trim();
+  const baseUrl   = (process.env.IYZICO_BASE_URL   || 'https://sandbox-api.iyzipay.com').trim();
 
-  const rnd = crypto.randomBytes(8).toString('hex');
-  const requestBody = {
-    locale: 'tr',
-    conversationId: rnd,
-    token: token,
+  const uriPath     = '/payment/iyzipos/checkoutform/auth/ecom/detail';
+  const randomString = generateRandomString();
+
+  const body = {
+    locale:         'tr',
+    conversationId: randomString,
+    token:          token,
   };
-  const payload = JSON.stringify(requestBody);
-  
-  const hashStr = apiKey + rnd + secretKey + payload;
-  const signature = crypto
-    .createHmac('sha256', secretKey)
-    .update(hashStr)
-    .digest('hex');
 
-  const authorization = Buffer.from(`${apiKey}:${signature}`).toString('base64');
+  const authorization = generateAuthV2(apiKey, secretKey, uriPath, body, randomString);
 
-  const response = await fetch(`${baseUrl}/payment/iyzipos/checkoutform/auth/ecom/detail`, {
+  const response = await fetch(`${baseUrl}${uriPath}`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'x-iyzi-rnd': rnd,
-      'Authorization': `IYZWSv2 ${authorization}`,
+      'Content-Type':          'application/json',
+      'x-iyzi-rnd':            randomString,
+      'x-iyzi-client-version': 'iyzipay-node-2.0.65',
+      'Authorization':          authorization,
     },
-    body: payload,
+    body: JSON.stringify(body),
   });
 
   return await response.json();
