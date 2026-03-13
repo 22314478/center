@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import getIyzipay from '@/lib/iyzipay';
+import { initializeCheckoutForm } from '@/lib/iyzipay';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -92,25 +92,11 @@ export async function POST(req: Request) {
       ]
     };
 
-    let iyzipayInstance;
-    try {
-      iyzipayInstance = getIyzipay();
-    } catch (err: any) {
-      console.error("Iyzico Configuration Error:", err.message);
-      return NextResponse.json({ error: 'Payment system is not configured' }, { status: 500 });
-    }
+    const result = await initializeCheckoutForm(request as any);
 
-    return new Promise<Response>((resolve) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      iyzipayInstance.checkoutFormInitialize.create(request as any, (err: any, result: any) => {
-        if (err || result.status !== 'success') {
-          console.error("Iyzico Initialization Error:", err || result.errorMessage);
-          return resolve(NextResponse.json({ error: result?.errorMessage || 'Payment initialization failed' }, { status: 500 }));
-        }
-
-        // Return the payment page URL to redirect the user
-        return resolve(NextResponse.json({ paymentPageUrl: result.paymentPageUrl + '&iframe=false' }));
-      });
+    // Return the payment page URL to redirect the user
+    return NextResponse.json({ 
+      paymentPageUrl: result.paymentPageUrl + '&iframe=false' 
     });
 
   } catch (error) {
