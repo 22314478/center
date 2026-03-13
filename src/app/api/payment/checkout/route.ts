@@ -21,10 +21,23 @@ export async function POST(req: Request) {
     const servicePrice = SERVICE_PRICES[service] || 500;
     const depositAmount = servicePrice / 2; // 50% deposit
 
+    // Normalize name for Iyzico
+    const nameParts = name.trim().split(/\s+/);
+    const firstName = nameParts[0] || 'GlowLuxe';
+    const lastName = nameParts.slice(1).join(' ') || 'Customer';
+
+    // Normalize phone for Iyzico (+90...)
+    const cleanPhone = phone.replace(/\D/g, '');
+    const formattedPhone = cleanPhone.startsWith('90') 
+      ? `+${cleanPhone}` 
+      : cleanPhone.startsWith('0') 
+        ? `+90${cleanPhone.slice(1)}` 
+        : `+90${cleanPhone}`;
+
     // 1. Create a pending appointment in Firestore FIRST
     const appointmentData = {
       name,
-      phone,
+      phone: formattedPhone,
       email,
       service,
       servicePrice,
@@ -45,24 +58,21 @@ export async function POST(req: Request) {
     const request = {
       locale: 'tr',
       conversationId: appointmentId,
-      price: depositAmount.toString(),
-      paidPrice: depositAmount.toString(),
-      currency: 'TRY', // Use Iyzipay.CURRENCY.TRY practically if enum exists, 'TRY' string works too
+      price: depositAmount.toFixed(2),
+      paidPrice: depositAmount.toFixed(2),
+      currency: 'TRY',
       basketId: `B-${appointmentId}`,
       paymentGroup: 'PRODUCT',
       callbackUrl: `${process.env.NEXT_PUBLIC_SITE_URL}/api/payment/callback?id=${appointmentId}`,
-      enabledInstallments: [1],
       buyer: {
         id: `BY-${Date.now()}`,
-        name: name.split(' ')[0] || 'GlowLuxe',
-        surname: name.split(' ').slice(1).join(' ') || 'Customer',
-        gsmNumber: phone,
+        name: firstName,
+        surname: lastName,
+        gsmNumber: formattedPhone,
         email: email,
-        identityNumber: '11111111111', // Dummy for sandbox
-        lastLoginDate: '2015-10-05 12:43:35',
-        registrationDate: '2013-04-21 15:12:09',
+        identityNumber: '74300864791', // Strict sandbox identity
         registrationAddress: 'Ortakoy, Istanbul',
-        ip: '85.34.78.112',
+        ip: '127.0.0.1', // Safe for sandbox
         city: 'Istanbul',
         country: 'Turkey',
         zipCode: '34347'
@@ -88,7 +98,7 @@ export async function POST(req: Request) {
           category1: 'Beauty',
           category2: service.charAt(0).toUpperCase() + service.slice(1),
           itemType: 'VIRTUAL',
-          price: depositAmount.toString()
+          price: depositAmount.toFixed(2)
         }
       ]
     };
