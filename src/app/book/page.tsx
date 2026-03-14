@@ -253,6 +253,10 @@ function BookingForm() {
             <input required type="tel" name="phone" placeholder={t.booking.placeholders.phone} value={formData.phone} onChange={handleChange} className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-xl focus:border-secondary/30 outline-none transition-all font-bold text-xs" />
           </div>
           <div className="space-y-1">
+            <label className="text-[9px] font-black uppercase text-gray-400 tracking-widest">{t.booking.email}</label>
+            <input required type="email" name="email" placeholder={t.booking.placeholders.email} value={formData.email} onChange={handleChange} className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-xl focus:border-secondary/30 outline-none transition-all font-bold text-xs" />
+          </div>
+          <div className="space-y-1">
             <label className="text-[9px] font-black uppercase text-gray-400 tracking-widest">{t.booking.service}</label>
             <select required name="service" value={formData.service} onChange={handleChange} className="w-full px-3 py-2 bg-gray-50 border border-gray-100 rounded-xl focus:border-secondary/30 outline-none transition-all font-bold appearance-none cursor-pointer text-xs">
               <option value="" disabled>{t.booking.selectService}</option>
